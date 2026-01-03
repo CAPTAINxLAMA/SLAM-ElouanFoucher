@@ -14,7 +14,7 @@ include_once "../config.php";
 $pdo = new PDO('mysql:host=' . config::HOST . ';dbname=' . config::DBNAME
     , config::USER, config::PASSWORD);
 
-$req=$pdo->prepare('SELECT choregraphies.Id, mouvements.Nom NameMvm, affichages.Nom NameAff, sons.Nom NameSon FROM choregraphies LEFT JOIN mouvements ON choregraphies.Mouvement_Id = mouvements.Id LEFT JOIN affichages ON choregraphies.Affichage_Id = affichages.Id LEFT JOIN sons ON choregraphies.Son_Id = sons.Id WHERE choregraphies.id=:id');
+$req=$pdo->prepare('SELECT choregraphies.Id, mouvements.MvtName, affichages.AffName, sons.SonName FROM choregraphies LEFT JOIN mouvements ON choregraphies.Mouvement_Id = mouvements.Id LEFT JOIN affichages ON choregraphies.Affichage_Id = affichages.Id LEFT JOIN sons ON choregraphies.Son_Id = sons.Id WHERE choregraphies.id=:id');
 $req->bindParam(':id',$id);
 $req->execute();
 $choregraphies=$req->fetchAll();
@@ -31,11 +31,11 @@ $choree=$choregraphies[0];//je récupère la catégorie à modifier
 <tr>
     <td>Numéro : <?php echo  $choree["Id"] ?></td>
     <br>
-    <td>Mouvement : <?php echo $choree["NameMvm"] ?></td>
+    <td>Mouvement : <?php echo $choree["MvtName"] ?></td>
     <br>
-    <td>Affichage : <?php echo $choree["NameAff"] ?></td>
+    <td>Affichage : <?php echo $choree["AffName"] ?></td>
     <br>
-    <td>Son : <?php echo $choree["NameSon"] ?></td>
+    <td>Son : <?php echo $choree["SonName"] ?></td>
     <br>
     <td>
 

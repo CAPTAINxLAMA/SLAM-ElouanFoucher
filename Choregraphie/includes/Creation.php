@@ -1,15 +1,8 @@
 <?php
-
 session_start();
 
 $etape = filter_input(INPUT_POST, 'etape', FILTER_DEFAULT);
-
-$MvtAngle = "";
-$MvtTime = "";
-$AffText = "";
-$AffTime = "";
-$SonNote = "";
-$SonTime = "";
+$action = filter_input(INPUT_POST, 'action', FILTER_DEFAULT);
 
 if ($etape == "0")
 {
@@ -22,9 +15,43 @@ if ($etape == "0")
     }
     else
     {
-        $_SESSION['MvtAngle'] = filter_input(INPUT_POST, 'MvtAngle', FILTER_DEFAULT);
-        $_SESSION['MvtTime'] = filter_input(INPUT_POST, 'MvtTime', FILTER_DEFAULT);
-        header("Location: creer.php?etape=1");
+        // Récupérer les tableaux d'angles et de temps
+        $angles = $_POST['MvtAngle'];
+        $times = $_POST['MvtTime'];
+
+        if ($action == "ajouter")
+        {
+            // Sauvegarder temporairement les mouvements
+            $mouvements = [];
+            foreach ($angles as $key => $angle) {
+                $mouvements[] = [
+                        'angle' => $angle,
+                        'time' => $times[$key]
+                ];
+            }
+            $_SESSION['mouvements'] = $mouvements;
+            $_SESSION['nbMouvements'] = count($mouvements) + 1;
+
+            // Recharger le formulaire avec un mouvement supplémentaire
+            header("Location: creer.php?etape=0");
+        }
+        else if ($action == "Suivant")
+        {
+            // Sauvegarder tous les mouvements en session
+            $mouvements = [];
+            foreach ($angles as $key => $angle) {
+                $mouvements[] = [
+                        'angle' => $angle,
+                        'time' => $times[$key]
+                ];
+            }
+            $_SESSION['mouvements'] = $mouvements;
+
+            // Réinitialiser le compteur
+            unset($_SESSION['nbMouvements']);
+
+            header("Location: creer.php?etape=1");
+        }
     }
 }
 
@@ -68,36 +95,64 @@ if ($etape == "3")
     $token = rand(0, 1000000);
     $_SESSION['token'] = $token;
     ?>
+
+    <h1><?php echo htmlspecialchars($_SESSION['ChoreName']);?></h1>
     <table class="table table-stripped">
         <tr>
-            <th>1</th>
-            <th>2</th>
+            <th>Étape</th>
+            <th>Nom</th>
+            <th>Contenu</th>
+            <th>Durée (en seconde)</th>
             <th></th>
         </tr>
+        <?php
+//        $mouvements = $_SESSION['mouvements'];
+//        foreach ($mouvements as $index => $mvt):
+//            ?>
+<!--            <tr>-->
+<!--                <td>--><?php //echo htmlspecialchars($mvt['angle']); ?><!--°</td>-->
+<!--                <td>--><?php //echo htmlspecialchars($mvt['time']); ?><!--s</td>-->
+<!--                <td>Mouvement --><?php //echo ($index + 1); ?><!--</td>-->
+<!--            </tr>-->
+<!--        --><?php //endforeach; ?>
+        <?php
+        $mouvements = $_SESSION['mouvements'];
+        foreach ($mouvements as $index => $mvt):
+        ?>
         <tr>
-            <td><?php echo $_SESSION['MvtAngle'] ?></td>
-            <td><?php echo $_SESSION['MvtTime'] ?></td>
-            <td><a href="creer.php?etape=0" class="btn btn-warning">Modifier</a></td>
+            <td>Mouvement <?php echo ($index + 1); ?></td>
+            <td><?php echo isset($mvt['nom']) ? htmlspecialchars($mvt['nom']) : '-'; ?></td>
+            <td>Angle : <?php echo htmlspecialchars($mvt['angle']); ?>°</td>
+            <td><?php echo htmlspecialchars($mvt['time']); ?></td>
+            <td>
+                <?php if ($index == 0): ?>
+                    <a href="Mouvement.php?etape=0" class="btn btn-warning btn-sm">Modifier</a>
+                <?php endif; ?>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+
+        <tr>
+            <td colspan="3"><a href="creer.php?etape=0" class="btn btn-warning">Modifier les mouvements</a></td>
         </tr>
         <tr>
-            <td><?php echo $_SESSION['AffText'] ?></td>
-            <td><?php echo $_SESSION['AffTime'] ?></td>
+            <td><?php echo htmlspecialchars($_SESSION['AffText']); ?></td>
+            <td><?php echo htmlspecialchars($_SESSION['AffTime']); ?></td>
             <td><a href="creer.php?etape=1" class="btn btn-warning">Modifier</a></td>
         </tr>
         <tr>
-            <td><?php echo $_SESSION['SonNote'] ?></td>
-            <td><?php echo $_SESSION['SonTime'] ?></td>
+            <td><?php echo htmlspecialchars($_SESSION['SonNote']); ?></td>
+            <td><?php echo htmlspecialchars($_SESSION['SonTime']); ?></td>
             <td><a href="creer.php?etape=2" class="btn btn-warning">Modifier</a></td>
         </tr>
     </table>
 
     <form action="../actions/create.php" method="post">
-        <input type="hidden" name="MvtAngle" value="<?php echo $_SESSION['MvtAngle']; ?>">
-        <input type="hidden" name="MvtTime" value="<?php echo $_SESSION['MvtTime']; ?>">
-        <input type="hidden" name="AffText" value="<?php echo $_SESSION['AffText']; ?>">
-        <input type="hidden" name="AffTime" value="<?php echo $_SESSION['AffTime']; ?>">
-        <input type="hidden" name="SonNote" value="<?php echo $_SESSION['SonNote']; ?>">
-        <input type="hidden" name="SonTime" value="<?php echo $_SESSION['SonTime']; ?>">
+        <input type="hidden" name="mouvements" value='<?php echo json_encode($_SESSION['mouvements']); ?>'>
+        <input type="hidden" name="AffText" value="<?php echo htmlspecialchars($_SESSION['AffText']); ?>">
+        <input type="hidden" name="AffTime" value="<?php echo htmlspecialchars($_SESSION['AffTime']); ?>">
+        <input type="hidden" name="SonNote" value="<?php echo htmlspecialchars($_SESSION['SonNote']); ?>">
+        <input type="hidden" name="SonTime" value="<?php echo htmlspecialchars($_SESSION['SonTime']); ?>">
         <input type="hidden" name="token" value="<?php echo $token; ?>">
         <input type="submit" value="Créer" class="btn btn-success">
     </form>
