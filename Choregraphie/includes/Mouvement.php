@@ -1,6 +1,20 @@
 <?php
 session_start();
 
+if (!isset($_SESSION['ChoreName'])): ?>
+    <h1>Nom de la chorégraphie</h1>
+    <form method="post">
+        <input type="text" name="choreName" placeholder="Nom de votre chorégraphie" required>
+        <input type="submit" value="Continuer" class="btn btn-primary">
+    </form>
+    <?php
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['choreName'])) {
+        $_SESSION['ChoreName'] = filter_input(INPUT_POST, 'choreName', FILTER_SANITIZE_STRING);
+    }
+    exit();
+    ?>
+<?php endif; ?>
+
 $etape = filter_input(INPUT_GET, "etape", FILTER_VALIDATE_INT);
 $modifier = filter_input(INPUT_GET, "modifier", FILTER_VALIDATE_INT);
 
