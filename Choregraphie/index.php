@@ -13,6 +13,7 @@ if ($cancel == 1 || $new == 1) {
     unset($_SESSION['sons']);
     unset($_SESSION['nbSons']);
     unset($_SESSION['en_cours_creation']);
+    unset($_SESSION['ChoreName']);
 }
 
 include "header.php"; ?>

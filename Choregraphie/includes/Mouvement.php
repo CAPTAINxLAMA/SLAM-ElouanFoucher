@@ -14,7 +14,7 @@ if (!isset($_SESSION['ChoreName'])): ?>
     exit();
     ?>
 <?php endif; ?>
-
+<?php
 $etape = filter_input(INPUT_GET, "etape", FILTER_VALIDATE_INT);
 $modifier = filter_input(INPUT_GET, "modifier", FILTER_VALIDATE_INT);
 
