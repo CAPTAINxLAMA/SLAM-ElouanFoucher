@@ -2,6 +2,7 @@
 session_start();
 
 $etape = filter_input(INPUT_GET, "etape", FILTER_VALIDATE_INT);
+$modifier = filter_input(INPUT_GET, "modifier", FILTER_VALIDATE_INT);
 
 // Génération d'un token
 $token = rand(0, 1000000);
@@ -9,7 +10,12 @@ $_SESSION['tokenMvt'] = $token;
 
 $_SESSION['en_cours_creation'] = true;
 
-$nbMouvements = isset($_SESSION['nbMouvements']) ? $_SESSION['nbMouvements'] : 1;
+if ($modifier == 1 && isset($_SESSION['mouvements'])) {
+    $nbMouvements = count($_SESSION['mouvements']);
+} else {
+    $nbMouvements = isset($_SESSION['nbMouvements']) ? $_SESSION['nbMouvements'] : 1;
+}
+
 $mouvements = isset($_SESSION['mouvements']) ? $_SESSION['mouvements'] : [];
 ?>
 

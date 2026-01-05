@@ -2,12 +2,18 @@
 session_start();
 
 $etape = filter_input(INPUT_GET, "etape", FILTER_VALIDATE_INT);
+$modifier = filter_input(INPUT_GET, "modifier", FILTER_VALIDATE_INT);
 
 // Génération d'un token
 $token = rand(0, 1000000);
 $_SESSION['tokenSon'] = $token;
 
-$nbSons = isset($_SESSION['nbSons']) ? $_SESSION['nbSons'] : 1;
+if ($modifier == 1 && isset($_SESSION['sons'])) {
+    $nbSons = count($_SESSION['sons']);
+} else {
+    $nbSons = isset($_SESSION['nbSons']) ? $_SESSION['nbSons'] : 1;
+}
+
 $sons = isset($_SESSION['sons']) ? $_SESSION['sons'] : [];
 ?>
 
