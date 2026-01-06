@@ -1,24 +1,28 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['ChoreName'])): ?>
+if (!isset($_SESSION['ChoreName'])){
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['choreName'])) {
+    $_SESSION['ChoreName'] = filter_input(INPUT_POST, 'choreName', FILTER_SANITIZE_STRING);
+    }
+    else {
+    ?>
     <h1>Nom de la chorégraphie</h1>
     <form method="post">
-        <input type="text" name="choreName" placeholder="Nom de votre chorégraphie" required>
+        <input type="text" name="choreName" placeholder="Nom de votre chorégraphie" required style="width: 250px; height: 40px;">
+        <br>
+        <br>
         <input type="submit" value="Continuer" class="btn btn-primary">
     </form>
     <?php
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['choreName'])) {
-        $_SESSION['ChoreName'] = filter_input(INPUT_POST, 'choreName', FILTER_SANITIZE_STRING);
-    }
     exit();
+    }
+    }
     ?>
-<?php endif; ?>
 <?php
 $etape = filter_input(INPUT_GET, "etape", FILTER_VALIDATE_INT);
 $modifier = filter_input(INPUT_GET, "modifier", FILTER_VALIDATE_INT);
 
-// Génération d'un token
 $token = rand(0, 1000000);
 $_SESSION['tokenMvt'] = $token;
 

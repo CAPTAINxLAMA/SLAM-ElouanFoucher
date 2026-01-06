@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Nettoyer la session si annulation ou nouvelle création
 $cancel = filter_input(INPUT_GET, "cancel", FILTER_VALIDATE_INT);
 $new = filter_input(INPUT_GET, "new", FILTER_VALIDATE_INT);
 
@@ -16,44 +15,105 @@ if ($cancel == 1 || $new == 1) {
     unset($_SESSION['ChoreName']);
 }
 
-include "header.php"; ?>
+include "header.php";
+?>
 
     <h2>Vos créations</h2>
 
-    <table class="table table-stripped">
+<?php
+$success = filter_input(INPUT_GET, "success", FILTER_VALIDATE_INT);
+if ($success == 1) {
+    echo '<div class="alert alert-success">Chorégraphie créée avec succès !</div>';
+}
+?>
+
+    <table class="table table-striped">
+        <thead>
         <tr>
-            <th>Numéro</th>
-            <th>Mouvement</th>
-            <th>Affichage</th>
-            <th>Son</th>
+            <th>Nom</th>
+            <th>Mouvements</th>
+            <th>Affichages</th>
+            <th>Sons</th>
             <th></th>
         </tr>
+        </thead>
+        <tbody>
         <?php
         include_once "config.php";
         $pdo = new PDO("mysql:host=".config::HOST.";dbname=".config::DBNAME, config::USER, config::PASSWORD);
 
-        $req = $pdo->prepare("SELECT choregraphies.Id, mouvements.MvtName, affichages.AffName, sons.SonName FROM choregraphies LEFT JOIN mouvements ON choregraphies.Mouvement_Id = mouvements.Id LEFT JOIN affichages ON choregraphies.Affichage_Id = affichages.Id LEFT JOIN sons ON choregraphies.Son_Id = sons.Id");
+        $req = $pdo->prepare("SELECT Id, ChoreName FROM choregraphies ORDER BY Id DESC");
         $req->execute();
         $chorees = $req->fetchAll();
 
         foreach ($chorees as $choree)
         {
+            $choreId = $choree["Id"];
+
+            $reqMvt = $pdo->prepare(" SELECT m.MvtName  FROM choregraphie_mouvements cm JOIN mouvements m ON cm.Mouvement_Id = m.Id WHERE cm.Choregraphie_Id = :id ORDER BY cm.Ordre");
+            $reqMvt->bindParam(':id', $choreId);
+            $reqMvt->execute();
+            $mouvements = $reqMvt->fetchAll();
+
+            $reqAff = $pdo->prepare(" SELECT a.AffName  FROM choregraphie_affichages ca JOIN affichages a ON ca.Affichage_Id = a.Id WHERE ca.Choregraphie_Id = :id ORDER BY ca.Ordre");
+            $reqAff->bindParam(':id', $choreId);
+            $reqAff->execute();
+            $affichages = $reqAff->fetchAll();
+
+            $reqSon = $pdo->prepare("SELECT s.SonName  FROM choregraphie_sons cs JOIN sons s ON cs.Son_Id = s.Id WHERE cs.Choregraphie_Id = :id ORDER BY cs.Ordre");
+            $reqSon->bindParam(':id', $choreId);
+            $reqSon->execute();
+            $sons = $reqSon->fetchAll();
             ?>
+
+
             <tr>
-                <td><?php echo $choree["Id"] ?></td>
-                <td><?php echo $choree["MvtName"] ?></td>
-                <td><?php echo $choree["AffName"] ?></td>
-                <td><?php echo $choree["SonName"] ?></td>
+                <td><strong><?php echo htmlspecialchars($choree["ChoreName"]); ?></strong></td>
                 <td>
-                    <a href="includes/tester.php?id=<?php echo $choree["Id"] ?>" class="btn btn-primary">Tester</a>
-                    <a href="includes/modifier.php?id=<?php echo $choree["Id"] ?>" class="btn btn-warning">Modifier</a>
-                    <a href="includes/supprimer.php?id=<?php echo $choree["Id"] ?>" class="btn btn-danger">Supprimer</a>
+                    <?php
+                    if (count($mouvements) > 0) {
+                        foreach ($mouvements as $mvt) {
+                            echo '<span class="badge bg-primary">' . htmlspecialchars($mvt["MvtName"]) . '</span> ';
+                        }
+                    } else {
+                        echo '<em>Aucun</em>';
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    if (count($affichages) > 0) {
+                        foreach ($affichages as $aff) {
+                            echo '<span class="badge bg-info">' . htmlspecialchars($aff["AffName"]) . '</span> ';
+                        }
+                    } else {
+                        echo '<em>Aucun</em>';
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    if (count($sons) > 0) {
+                        foreach ($sons as $son) {
+                            echo '<span class="badge bg-success">' . htmlspecialchars($son["SonName"]) . '</span> ';
+                        }
+                    } else {
+                        echo '<em>Aucun</em>';
+                    }
+                    ?>
+                </td>
+                <td>
+                    <a href="includes/tester.php?id=<?php echo $choree["Id"]; ?>" class="btn btn-primary btn-sm">Tester</a>
+                    <a href="includes/modifier.php?id=<?php echo $choree["Id"]; ?>" class="btn btn-warning btn-sm">Modifier</a>
+                    <a href="includes/supprimer.php?id=<?php echo $choree["Id"]; ?>" class="btn btn-danger btn-sm">Supprimer</a>
                 </td>
             </tr>
             <?php
         }
         ?>
+        </tbody>
     </table>
-    <a href="includes/creer.php?etape=0&new=1" class="btn btn-success">Créer</a>
+
+    <a href="includes/creer.php?etape=0&new=1" class="btn btn-success">Créer une nouvelle chorégraphie</a>
 
 <?php include "footer.php"; ?>
