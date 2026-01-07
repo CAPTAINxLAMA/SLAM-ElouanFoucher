@@ -4,9 +4,6 @@ session_start();
 $etape = filter_input(INPUT_POST, 'etape', FILTER_DEFAULT);
 $action = filter_input(INPUT_POST, 'action', FILTER_DEFAULT);
 
-// ========================
-// ÉTAPE 0 : MOUVEMENTS
-// ========================
 if ($etape == "0")
 {
     $tokenServeur = $_SESSION['tokenMvt'];
@@ -18,14 +15,12 @@ if ($etape == "0")
     }
     else
     {
-        // Récupérer les tableaux de données
         $names = $_POST['MvtName'];
         $angles = $_POST['MvtAngle'];
         $times = $_POST['MvtTime'];
 
         if ($action == "ajouter")
         {
-            // Sauvegarder temporairement les mouvements
             $mouvements = [];
             foreach ($names as $key => $name) {
                 $mouvements[] = [
@@ -37,12 +32,10 @@ if ($etape == "0")
             $_SESSION['mouvements'] = $mouvements;
             $_SESSION['nbMouvements'] = count($mouvements) + 1;
 
-            // Recharger le formulaire avec un mouvement supplémentaire
             header("Location: creer.php?etape=0");
         }
         else if ($action == "Suivant")
         {
-            // Sauvegarder tous les mouvements en session
             $mouvements = [];
             foreach ($names as $key => $name) {
                 $mouvements[] = [
@@ -53,7 +46,6 @@ if ($etape == "0")
             }
             $_SESSION['mouvements'] = $mouvements;
 
-            // Réinitialiser le compteur
             unset($_SESSION['nbMouvements']);
 
             if (isset($_SESSION['affichages']) && count($_SESSION['affichages']) > 0) {
@@ -65,9 +57,6 @@ if ($etape == "0")
     }
 }
 
-// ========================
-// ÉTAPE 1 : AFFICHAGES
-// ========================
 else if ($etape == "1")
 {
     $tokenServeur = $_SESSION['tokenAff'];
@@ -79,14 +68,12 @@ else if ($etape == "1")
     }
     else
     {
-        // Récupérer les tableaux de données
         $names = $_POST['AffName'];
         $texts = $_POST['AffText'];
         $times = $_POST['AffTime'];
 
         if ($action == "ajouter")
         {
-            // Sauvegarder temporairement les affichages
             $affichages = [];
             foreach ($names as $key => $name) {
                 $affichages[] = [
@@ -98,12 +85,10 @@ else if ($etape == "1")
             $_SESSION['affichages'] = $affichages;
             $_SESSION['nbAffichages'] = count($affichages) + 1;
 
-            // Recharger le formulaire avec un affichage supplémentaire
             header("Location: creer.php?etape=1");
         }
         else if ($action == "Suivant")
         {
-            // Sauvegarder tous les affichages en session
             $affichages = [];
             foreach ($names as $key => $name) {
                 $affichages[] = [
@@ -114,7 +99,6 @@ else if ($etape == "1")
             }
             $_SESSION['affichages'] = $affichages;
 
-            // Réinitialiser le compteur
             unset($_SESSION['nbAffichages']);
 
             if (isset($_SESSION['sons']) && count($_SESSION['sons']) > 0) {
@@ -126,9 +110,6 @@ else if ($etape == "1")
     }
 }
 
-// ========================
-// ÉTAPE 2 : SONS
-// ========================
 else if ($etape == "2")
 {
     $tokenServeur = $_SESSION['tokenSon'];
@@ -140,14 +121,12 @@ else if ($etape == "2")
     }
     else
     {
-        // Récupérer les tableaux de données
         $names = $_POST['SonName'];
         $notes = $_POST['SonNote'];
         $times = $_POST['SonTime'];
 
         if ($action == "ajouter")
         {
-            // Sauvegarder temporairement les sons
             $sons = [];
             foreach ($names as $key => $name) {
                 $sons[] = [
@@ -159,12 +138,10 @@ else if ($etape == "2")
             $_SESSION['sons'] = $sons;
             $_SESSION['nbSons'] = count($sons) + 1;
 
-            // Recharger le formulaire avec un son supplémentaire
             header("Location: creer.php?etape=2");
         }
         else if ($action == "Suivant")
         {
-            // Sauvegarder tous les sons en session
             $sons = [];
             foreach ($names as $key => $name) {
                 $sons[] = [
@@ -175,7 +152,6 @@ else if ($etape == "2")
             }
             $_SESSION['sons'] = $sons;
 
-            // Réinitialiser le compteur
             unset($_SESSION['nbSons']);
 
             $etape = 3;
@@ -183,14 +159,16 @@ else if ($etape == "2")
     }
 }
 
-// ========================
-// ÉTAPE 3 : RÉCAPITULATIF
-// ========================
 if ($etape == "3")
 {
     include "includes/header.php";
     $token = rand(0, 1000000);
     $_SESSION['token'] = $token;
+
+    // différence entre le "modifier" lors de la création de la choré, et le "modifier" après avoir créé la chorégraphie.
+    $modeModification = isset($_SESSION['mode_modification']) && $_SESSION['mode_modification'] === true && isset($_SESSION['modify_id']);
+    $actionUrl = $modeModification ? "actions/update.php" :   "actions/create.php";
+    $boutonTexte = $modeModification ? "Mettre à jour" : "Créer la chorégraphie";
     ?>
 
     <h1>Récapitulatif de votre chorégraphie</h1>
@@ -205,7 +183,6 @@ if ($etape == "3")
         </thead>
         <tbody>
         <?php
-        // Afficher les mouvements
         if (isset($_SESSION['mouvements'])):
             $mouvements = $_SESSION['mouvements'];
             foreach ($mouvements as $index => $mvt):
@@ -225,7 +202,6 @@ if ($etape == "3")
         ?>
 
         <?php
-        // Afficher les affichages
         if (isset($_SESSION['affichages'])):
             $affichages = $_SESSION['affichages'];
             foreach ($affichages as $index => $aff):
@@ -245,7 +221,6 @@ if ($etape == "3")
         ?>
 
         <?php
-        // Afficher les sons
         if (isset($_SESSION['sons'])):
             $sons = $_SESSION['sons'];
             foreach ($sons as $index => $son):
@@ -266,12 +241,15 @@ if ($etape == "3")
         </tbody>
     </table>
 
-    <form action="actions/create.php" method="post">
+    <form action="<?php echo $actionUrl; ?>" method="post">
         <input type="hidden" name="mouvements" value='<?php echo json_encode($_SESSION['mouvements']); ?>'>
         <input type="hidden" name="affichages" value='<?php echo json_encode($_SESSION['affichages']); ?>'>
         <input type="hidden" name="sons" value='<?php echo json_encode($_SESSION['sons']); ?>'>
         <input type="hidden" name="token" value="<?php echo $token; ?>">
-        <input type="submit" value="Créer la chorégraphie" class="btn btn-success">
+        <?php if ($modeModification): ?>
+            <input type="hidden" name="modify_id" value="<?php echo $_SESSION['modify_id']; ?>">
+        <?php endif; ?>
+        <input type="submit" value="<?php echo $boutonTexte; ?>" class="btn btn-success">
     </form>
     <br>
     <a href="index.php?cancel=1" class="btn btn-secondary">Annuler</a>

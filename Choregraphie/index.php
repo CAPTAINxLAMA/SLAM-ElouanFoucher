@@ -22,8 +22,12 @@ include "includes/header.php";
 
 <?php
 $success = filter_input(INPUT_GET, "success", FILTER_VALIDATE_INT);
+$updated = filter_input(INPUT_GET, "updated", FILTER_VALIDATE_INT);
 if ($success == 1) {
     echo '<div class="alert alert-success">Chorégraphie créée avec succès !</div>';
+}
+if ($updated == 1) {
+    echo '<div class="alert alert-success">Chorégraphie mise à jour avec succès !</div>';
 }
 ?>
 
