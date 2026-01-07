@@ -9,7 +9,7 @@ if ($tokenRecu != $tokenServeur){
 }
 //on récupère les données du POST
 $id=filter_input(INPUT_POST,'id',FILTER_VALIDATE_INT);
-include "../config.php";
+include "../includes/config.php";
 $pdo = new PDO('mysql:host=' . config::HOST . ';dbname=' . config::DBNAME , config::USER, config::PASSWORD);
 
 

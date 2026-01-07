@@ -20,7 +20,7 @@ $mouvements = json_decode($mouvementsJson, true);
 $affichages = json_decode($affichagesJson, true);
 $sons = json_decode($sonsJson, true);
 
-include "../config.php";
+include "../includes/config.php";
 $pdo = new PDO('mysql:host=' . config::HOST . ';dbname=' . config::DBNAME, config::USER, config::PASSWORD);
 
 $reqChore = $pdo->prepare("INSERT INTO choregraphies (ChoreName) VALUES (:choreName)");

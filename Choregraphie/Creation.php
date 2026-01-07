@@ -188,7 +188,7 @@ else if ($etape == "2")
 // ========================
 if ($etape == "3")
 {
-    include "../header.php";
+    include "includes/header.php";
     $token = rand(0, 1000000);
     $_SESSION['token'] = $token;
     ?>
@@ -266,7 +266,7 @@ if ($etape == "3")
         </tbody>
     </table>
 
-    <form action="../actions/create.php" method="post">
+    <form action="actions/create.php" method="post">
         <input type="hidden" name="mouvements" value='<?php echo json_encode($_SESSION['mouvements']); ?>'>
         <input type="hidden" name="affichages" value='<?php echo json_encode($_SESSION['affichages']); ?>'>
         <input type="hidden" name="sons" value='<?php echo json_encode($_SESSION['sons']); ?>'>
@@ -274,9 +274,9 @@ if ($etape == "3")
         <input type="submit" value="Créer la chorégraphie" class="btn btn-success">
     </form>
     <br>
-    <a href="../index.php?cancel=1" class="btn btn-secondary">Annuler</a>
+    <a href="index.php?cancel=1" class="btn btn-secondary">Annuler</a>
 
     <?php
-    include "../footer.php";
+    include "includes/footer.php";
 }
 ?>

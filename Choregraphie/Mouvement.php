@@ -13,6 +13,7 @@ if (!isset($_SESSION['ChoreName'])){
         <br>
         <br>
         <input type="submit" value="Continuer" class="btn btn-primary">
+        <a href="index.php?cancel=1" class="btn btn-secondary">Annuler</a>
     </form>
     <?php
     exit();

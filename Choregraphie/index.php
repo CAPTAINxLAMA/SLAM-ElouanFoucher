@@ -15,7 +15,7 @@ if ($cancel == 1 || $new == 1) {
     unset($_SESSION['ChoreName']);
 }
 
-include "header.php";
+include "includes/header.php";
 ?>
 
     <h2>Vos créations</h2>
@@ -39,7 +39,7 @@ if ($success == 1) {
         </thead>
         <tbody>
         <?php
-        include_once "config.php";
+        include_once "includes/config.php";
         $pdo = new PDO("mysql:host=".config::HOST.";dbname=".config::DBNAME, config::USER, config::PASSWORD);
 
         $req = $pdo->prepare("SELECT Id, ChoreName FROM choregraphies ORDER BY Id DESC");
@@ -103,9 +103,9 @@ if ($success == 1) {
                     ?>
                 </td>
                 <td>
-                    <a href="includes/tester.php?id=<?php echo $choree["Id"]; ?>" class="btn btn-primary btn-sm">Tester</a>
-                    <a href="includes/modifier.php?id=<?php echo $choree["Id"]; ?>" class="btn btn-warning btn-sm">Modifier</a>
-                    <a href="includes/supprimer.php?id=<?php echo $choree["Id"]; ?>" class="btn btn-danger btn-sm">Supprimer</a>
+                    <a href="tester.php?id=<?php echo $choree["Id"];?>" class="btn btn-primary btn-sm">Tester</a>
+                    <a href="modifier.php?id=<?php echo $choree["Id"];?>" class="btn btn-warning btn-sm">Modifier</a>
+                    <a href="supprimer.php?id=<?php echo $choree["Id"]?>" class="btn btn-danger btn-sm">Supprimer</a>
                 </td>
             </tr>
             <?php
@@ -114,6 +114,6 @@ if ($success == 1) {
         </tbody>
     </table>
 
-    <a href="includes/creer.php?etape=0&new=1" class="btn btn-success">Créer une nouvelle chorégraphie</a>
+    <a href="creer.php?etape=0&new=1" class="btn btn-success">Créer une nouvelle chorégraphie</a>
 
-<?php include "footer.php"; ?>
+<?php include "includes/footer.php"; ?>
