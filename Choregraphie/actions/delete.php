@@ -59,5 +59,4 @@ $req=$pdo->prepare("DELETE FROM choregraphies WHERE id=:id");
 $req->bindParam(':id', $modifyId);
 $req->execute();
 
-//retour à la page d'accueil
 header("Location: ../index.php");

@@ -21,6 +21,17 @@ if (!isset($_SESSION['ChoreName'])){
     }
     ?>
 <?php
+$supprimer = filter_input(INPUT_GET, "supprimer", FILTER_VALIDATE_INT);
+if ($supprimer !== null && $supprimer !== false && isset($_SESSION['mouvements'])) {
+    if (count($_SESSION['mouvements']) >= 1 && isset($_SESSION['mouvements'][$supprimer])) {
+        unset($_SESSION['mouvements'][$supprimer]);
+        $_SESSION['mouvements'] = array_values($_SESSION['mouvements']);
+    }
+    header("Location: creer.php?etape=0&modifier=1");
+    exit();
+}
+
+
 $etape = filter_input(INPUT_GET, "etape", FILTER_VALIDATE_INT);
 $modifier = filter_input(INPUT_GET, "modifier", FILTER_VALIDATE_INT);
 
@@ -42,7 +53,11 @@ $mouvements = isset($_SESSION['mouvements']) ? $_SESSION['mouvements'] : [];
 <form action="Creation.php" method="post">
     <?php for ($i = 0; $i < $nbMouvements; $i++): ?>
         <fieldset style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
-            <legend>Mouvement <?php echo ($i + 1); ?></legend>
+            <legend>Mouvement <?php echo ($i + 1); ?>
+                <?php if ($nbMouvements >= 1): ?>
+                    <button type="submit" name="action_supprimer" value="<?php echo $i; ?>" class="btn btn-danger btn-sm btn-supprimer"  onclick="return confirm('Voulez-vous vraiment supprimer ce mouvement ?' )" formnovalidate> ✕ Supprimer</button>
+                <?php endif; ?>
+            </legend>
             Nom du Mouvement :
             <input type="text" maxlength="50" name="MvtName[]"
                    value="<?php echo isset($mouvements[$i]['nom']) ? htmlspecialchars($mouvements[$i]['nom']) : ''; ?>" required>

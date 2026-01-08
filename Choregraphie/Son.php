@@ -1,10 +1,19 @@
 <?php
 session_start();
 
+$supprimer = filter_input(INPUT_GET, "supprimer", FILTER_VALIDATE_INT);
+if ($supprimer !== null && $supprimer !== false && isset($_SESSION['sons'])) {
+    if (count($_SESSION['sons']) >= 1 && isset($_SESSION['sons'][$supprimer])) {
+        unset($_SESSION['sons'][$supprimer]);
+        $_SESSION['sons'] = array_values($_SESSION['sons']);
+    }
+    header("Location: creer.php?etape=1&modifier=1");
+    exit();
+}
+
 $etape = filter_input(INPUT_GET, "etape", FILTER_VALIDATE_INT);
 $modifier = filter_input(INPUT_GET, "modifier", FILTER_VALIDATE_INT);
 
-// Génération d'un token
 $token = rand(0, 1000000);
 $_SESSION['tokenSon'] = $token;
 
@@ -21,7 +30,11 @@ $sons = isset($_SESSION['sons']) ? $_SESSION['sons'] : [];
 <form action="Creation.php" method="post">
     <?php for ($i = 0; $i < $nbSons; $i++): ?>
         <fieldset style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
-            <legend>Son <?php echo ($i + 1); ?></legend>
+            <legend>Son <?php echo ($i + 1); ?>
+                <?php if ($nbSons >= 1): ?>
+                    <button type="submit" name="action_supprimer" value="<?php echo $i; ?>" class="btn btn-danger btn-sm btn-supprimer" onclick="return confirm('Voulez-vous vraiment supprimer ce son ?')" formnovalidate>✕ Supprimer</button>
+                <?php endif; ?>
+            </legend>
             Nom du son :
             <input type="text" maxlength="50" name="SonName[]"
                    value="<?php echo isset($sons[$i]['nom']) ? htmlspecialchars($sons[$i]['nom']) : ''; ?>" required>

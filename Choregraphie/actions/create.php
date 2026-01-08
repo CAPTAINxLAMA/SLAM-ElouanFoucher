@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Vérification du token
 $tokenServeur = $_SESSION['token'];
 $tokenRecu = filter_input(INPUT_POST, 'token', FILTER_DEFAULT);
 
@@ -19,6 +18,10 @@ $sonsJson = filter_input(INPUT_POST, 'sons', FILTER_DEFAULT);
 $mouvements = json_decode($mouvementsJson, true);
 $affichages = json_decode($affichagesJson, true);
 $sons = json_decode($sonsJson, true);
+
+$mouvements = is_array($mouvements) ? $mouvements : [];
+$affichages = is_array($affichages) ? $affichages : [];
+$sons = is_array($sons) ? $sons : [];
 
 include "../includes/config.php";
 $pdo = new PDO('mysql:host=' . config::HOST . ';dbname=' . config::DBNAME, config::USER, config::PASSWORD);

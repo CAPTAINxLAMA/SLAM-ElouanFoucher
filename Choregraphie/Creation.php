@@ -15,9 +15,31 @@ if ($etape == "0")
     }
     else
     {
-        $names = $_POST['MvtName'];
-        $angles = $_POST['MvtAngle'];
-        $times = $_POST['MvtTime'];
+        $names = isset($_POST['MvtName']) ? $_POST['MvtName'] : [];
+        $angles = isset($_POST['MvtAngle']) ? $_POST['MvtAngle'] : [];
+        $times = isset($_POST['MvtTime']) ? $_POST['MvtTime'] : [];
+
+        $actionSupprimer = filter_input(INPUT_POST, 'action_supprimer', FILTER_VALIDATE_INT);
+        if ($actionSupprimer !== null && $actionSupprimer !== false) {
+            $mouvements = [];
+            foreach ($names as $key => $name) {
+                $mouvements[] = [
+                        'nom' => $name,
+                        'angle' => $angles[$key],
+                        'time' => $times[$key]
+                ];
+            }
+
+            if (count($mouvements) >= 1 && isset($mouvements[$actionSupprimer])) {
+                unset($mouvements[$actionSupprimer]);
+                $mouvements = array_values($mouvements);
+            }
+
+            $_SESSION['mouvements'] = $mouvements;
+
+            header("Location: creer.php?etape=0&modifier=1");
+            exit();
+        }
 
         if ($action == "ajouter")
         {
@@ -68,9 +90,31 @@ else if ($etape == "1")
     }
     else
     {
-        $names = $_POST['AffName'];
-        $texts = $_POST['AffText'];
-        $times = $_POST['AffTime'];
+        $names = isset($_POST['AffName']) ? $_POST['AffName'] : [];
+        $texts = isset($_POST['AffText']) ? $_POST['AffText'] : [];
+        $times = isset($_POST['AffTime']) ? $_POST['AffTime'] : [];
+
+        $actionSupprimer = filter_input(INPUT_POST, 'action_supprimer', FILTER_VALIDATE_INT);
+        if ($actionSupprimer !== null && $actionSupprimer !== false) {
+            $affichages = [];
+            foreach ($names as $key => $name) {
+                $affichages[] = [
+                        'nom' => $name,
+                        'texte' => $texts[$key],
+                        'time' => $times[$key]
+                ];
+            }
+
+            if (count($affichages) >= 1 && isset($affichages[$actionSupprimer])) {
+                unset($affichages[$actionSupprimer]);
+                $affichages = array_values($affichages);
+            }
+
+            $_SESSION['affichages'] = $affichages;
+
+            header("Location: creer.php?etape=1&modifier=1");
+            exit();
+        }
 
         if ($action == "ajouter")
         {
@@ -121,9 +165,31 @@ else if ($etape == "2")
     }
     else
     {
-        $names = $_POST['SonName'];
-        $notes = $_POST['SonNote'];
-        $times = $_POST['SonTime'];
+        $names = isset($_POST['SonName']) ? $_POST['SonName'] : [];
+        $notes = isset($_POST['SonNote']) ? $_POST['SonNote'] : [];
+        $times = isset($_POST['SonTime']) ? $_POST['SonTime'] : [];
+
+        $actionSupprimer = filter_input(INPUT_POST, 'action_supprimer', FILTER_VALIDATE_INT);
+        if ($actionSupprimer !== null && $actionSupprimer !== false) {
+            $sons = [];
+            foreach ($names as $key => $name) {
+                $sons[] = [
+                        'nom' => $name,
+                        'note' => $notes[$key],
+                        'time' => $times[$key]
+                ];
+            }
+
+            if (count($sons) >= 1 && isset($sons[$actionSupprimer])) {
+                unset($sons[$actionSupprimer]);
+                $sons = array_values($sons);
+            }
+
+            $_SESSION['sons'] = $sons;
+
+            header("Location: creer.php?etape=2&modifier=1");
+            exit();
+        }
 
         if ($action == "ajouter")
         {
@@ -165,13 +231,20 @@ if ($etape == "3")
     $token = rand(0, 1000000);
     $_SESSION['token'] = $token;
 
-    // différence entre le "modifier" lors de la création de la choré, et le "modifier" après avoir créé la chorégraphie.
+    // différence entre modif après la création ou pendant la création
     $modeModification = isset($_SESSION['mode_modification']) && $_SESSION['mode_modification'] === true && isset($_SESSION['modify_id']);
-    $actionUrl = $modeModification ? "actions/update.php" :   "actions/create.php";
+    $actionUrl = $modeModification ? "actions/update.php" : "actions/create.php";
     $boutonTexte = $modeModification ? "Mettre à jour" : "Créer la chorégraphie";
     ?>
 
     <h1>Récapitulatif de votre chorégraphie</h1>
+
+    <?php if ($modeModification): ?>
+    <div class="alert alert-info">
+        <strong>Mode modification</strong> - Vous modifiez une chorégraphie existante.
+    </div>
+<?php endif; ?>
+
     <table class="table table-striped">
         <thead>
         <tr>
@@ -179,11 +252,12 @@ if ($etape == "3")
             <th>Nom</th>
             <th>Contenu</th>
             <th>Durée (s)</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
         <?php
-        if (isset($_SESSION['mouvements'])):
+        if (isset($_SESSION['mouvements']) && !empty($_SESSION['mouvements'])):
             $mouvements = $_SESSION['mouvements'];
             foreach ($mouvements as $index => $mvt):
                 ?>
@@ -198,11 +272,20 @@ if ($etape == "3")
                 </tr>
             <?php
             endforeach;
+        else:
+            ?>
+            <tr>
+                <td colspan="5" class="text-center">
+                    <em>Aucun mouvement</em> -
+                    <a href="creer.php?etape=0" class="btn btn-primary">Ajouter des mouvements</a>
+                </td>
+            </tr>
+        <?php
         endif;
         ?>
 
         <?php
-        if (isset($_SESSION['affichages'])):
+        if (isset($_SESSION['affichages']) && !empty($_SESSION['affichages'])):
             $affichages = $_SESSION['affichages'];
             foreach ($affichages as $index => $aff):
                 ?>
@@ -217,11 +300,20 @@ if ($etape == "3")
                 </tr>
             <?php
             endforeach;
+        else:
+            ?>
+            <tr>
+                <td colspan="5" class="text-center">
+                    <em>Aucun affichage</em> -
+                    <a href="creer.php?etape=1" class="btn btn-primary">Ajouter des affichages</a>
+                </td>
+            </tr>
+        <?php
         endif;
         ?>
 
         <?php
-        if (isset($_SESSION['sons'])):
+        if (isset($_SESSION['sons']) && !empty($_SESSION['sons'])):
             $sons = $_SESSION['sons'];
             foreach ($sons as $index => $son):
                 ?>
@@ -236,15 +328,24 @@ if ($etape == "3")
                 </tr>
             <?php
             endforeach;
+        else:
+            ?>
+            <tr>
+                <td colspan="5" class="text-center">
+                    <em>Aucun son</em> -
+                    <a href="creer.php?etape=2" class="btn btn-primary">Ajouter des sons</a>
+                </td>
+            </tr>
+        <?php
         endif;
         ?>
         </tbody>
     </table>
 
     <form action="<?php echo $actionUrl; ?>" method="post">
-        <input type="hidden" name="mouvements" value='<?php echo json_encode($_SESSION['mouvements']); ?>'>
-        <input type="hidden" name="affichages" value='<?php echo json_encode($_SESSION['affichages']); ?>'>
-        <input type="hidden" name="sons" value='<?php echo json_encode($_SESSION['sons']); ?>'>
+        <input type="hidden" name="mouvements" value='<?php echo isset($_SESSION['mouvements']) ? json_encode($_SESSION['mouvements']) : '[]'; ?>'>
+        <input type="hidden" name="affichages" value='<?php echo isset($_SESSION['affichages']) ? json_encode($_SESSION['affichages']) : '[]'; ?>'>
+        <input type="hidden" name="sons" value='<?php echo isset($_SESSION['sons']) ? json_encode($_SESSION['sons']) : '[]'; ?>'>
         <input type="hidden" name="token" value="<?php echo $token; ?>">
         <?php if ($modeModification): ?>
             <input type="hidden" name="modify_id" value="<?php echo $_SESSION['modify_id']; ?>">
@@ -257,4 +358,3 @@ if ($etape == "3")
     <?php
     include "includes/footer.php";
 }
-?>

@@ -1,10 +1,19 @@
 <?php
 session_start();
 
+$supprimer = filter_input(INPUT_GET, "supprimer", FILTER_VALIDATE_INT);
+if ($supprimer !== null && $supprimer !== false && isset($_SESSION['affichages'])) {
+    if (count($_SESSION['affichages']) >= 1 && isset($_SESSION['affichages'][$supprimer])) {
+        unset($_SESSION['affichages'][$supprimer]);
+        $_SESSION['affichages'] = array_values($_SESSION['affichages']);
+    }
+    header("Location: creer.php?etape=1&modifier=1");
+    exit();
+}
+
 $etape = filter_input(INPUT_GET, "etape", FILTER_VALIDATE_INT);
 $modifier = filter_input(INPUT_GET, "modifier", FILTER_VALIDATE_INT);
 
-// Génération d'un token
 $token = rand(0, 1000000);
 $_SESSION['tokenAff'] = $token;
 
@@ -21,7 +30,11 @@ $affichages = isset($_SESSION['affichages']) ? $_SESSION['affichages'] : [];
 <form action="Creation.php" method="post">
     <?php for ($i = 0; $i < $nbAffichages; $i++): ?>
         <fieldset style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
-            <legend>Affichage <?php echo ($i + 1); ?></legend>
+            <legend>Affichage <?php echo ($i + 1); ?>
+                <?php if ($nbAffichages >= 1): ?>
+                <button type="submit" name="action_supprimer" value="<?php echo $i; ?>" class="btn btn-danger btn-sm btn-supprimer" onclick="return confirm('Voulez-vous vraiment supprimer cet affichage ?')" formnovalidate>✕ Supprimer</button>
+                <?php endif; ?>
+            </legend>
             Nom de l'affichage :
             <input type="text" maxlength="50" name="AffName[]"
                    value="<?php echo isset($affichages[$i]['nom']) ? htmlspecialchars($affichages[$i]['nom']) : ''; ?>" required>
