@@ -119,10 +119,9 @@ if (!empty($affichages)) {
 
 if (!empty($sons)) {
     foreach ($sons as $index => $son) {
-        $reqSon = $pdo->prepare("INSERT INTO sons (SonName, SonNote, SonTime) VALUES (:name, :note, :time)");
-        $reqSon->bindParam(':name', $son['nom']);
+        $reqSon = $pdo->prepare("INSERT INTO sons (SonNote, SonVolume) VALUES (:note, :volume)");
         $reqSon->bindParam(':note', $son['note']);
-        $reqSon->bindParam(':time', $son['time']);
+        $reqSon->bindParam(':volume', $son['volume']);
         $reqSon->execute();
 
         $sonId = $pdo->lastInsertId();

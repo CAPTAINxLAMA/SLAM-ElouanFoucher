@@ -35,17 +35,30 @@ $sons = isset($_SESSION['sons']) ? $_SESSION['sons'] : [];
                     <button type="submit" name="action_supprimer" value="<?php echo $i; ?>" class="btn btn-danger btn-sm btn-supprimer" onclick="return confirm('Voulez-vous vraiment supprimer ce son ?')" formnovalidate>✕ Supprimer</button>
                 <?php endif; ?>
             </legend>
-            Nom du son :
-            <input type="text" maxlength="50" name="SonName[]"
-                   value="<?php echo isset($sons[$i]['nom']) ? htmlspecialchars($sons[$i]['nom']) : ''; ?>" required>
+            Choisir un fichier audio :
+            <select name="SonNote[]" id="selectSon<?php echo $i; ?>"required>
+                <option value="">-- Sélectionner un son --</option>
+                <option value="Alarme.mp3" <?php echo (isset($sons[$i]['note']) && $sons[$i]['note'] == 'Alarme.mp3') ? 'selected' : ''; ?>>
+                    🔔 Alarme
+                </option>
+                <option value="Applaudissement.mp3" <?php echo (isset($sons[$i]['note']) && $sons[$i]['note'] == 'Applaudissement.mp3') ? 'selected' : ''; ?>>
+                    👏 Applaudissement
+                </option>
+                <option value="Atchoum.mp3" <?php echo (isset($sons[$i]['note']) && $sons[$i]['note'] == 'Atchoum.mp3') ? 'selected' : ''; ?>>
+                    🤧 Atchoum
+                </option>
+            </select>
+            <button type="button" class="btn btn-info btn-sm btn-tester-son" onclick="playSound(<?php echo $i; ?>)">
+                🔊 Tester le son
+            </button>
+
+            <audio id="audioPlayer<?php echo $i; ?>" style="display: none;" src="Sons/<?php echo htmlspecialchars($sons[$i]['note']); ?>"></audio>
             <br>
-            Choisir une note :
-            <input type="text" maxlength="10" name="SonNote[]"
-                   value="<?php echo isset($sons[$i]['note']) ? htmlspecialchars($sons[$i]['note']) : ''; ?>" required>
+
+            Volume :
+            <input type="range" name="SonVolume[]" min="0" max="100" value="<?php echo isset($sons[$i]['volume']) ? htmlspecialchars($sons[$i]['volume']) : '50'; ?>" oninput="this.nextElementSibling.value = this.value + '%'">
+            <output><?php echo isset($sons[$i]['volume']) ? htmlspecialchars($sons[$i]['volume']) : '50'; ?>%</output>
             <br>
-            Temps (secondes) :
-            <input type="number" step="0.01" name="SonTime[]"
-                   value="<?php echo isset($sons[$i]['time']) ? htmlspecialchars($sons[$i]['time']) : ''; ?>" required>
         </fieldset>
     <?php endfor; ?>
 
@@ -55,3 +68,27 @@ $sons = isset($_SESSION['sons']) ? $_SESSION['sons'] : [];
     <button type="submit" name="action" value="ajouter" class="btn btn-primary">Nouveau Son</button>
     <input type="submit" name="action" value="Suivant" class="btn btn-success">
 </form>
+<script>
+    function playSound(index) {
+        const select = document.getElementById('selectSon' + index);
+        const audio = document.getElementById('audioPlayer' + index);
+
+        if (!select || !audio) return;
+
+        const fichierChoisi = select.value;
+
+        if (fichierChoisi === "") {
+            alert("Veuillez d'abord sélectionner un son dans la liste !");
+            return;
+        }
+
+        audio.src = "Sons/" + fichierChoisi;
+
+        // 5. Réinitialiser et jouer
+        audio.pause();
+        audio.currentTime = 0;
+
+
+        audio.play().catch(err => console.error("Erreur lecture :", err));
+    }
+</script>

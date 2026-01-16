@@ -44,7 +44,7 @@ foreach ($affichages as $aff) {
     ];
 }
 
-$reqSon = $pdo->prepare(" SELECT s.SonName, s.SonNote, s.SonTime FROM choregraphie_sons cs JOIN sons s ON cs.Son_Id = s.Id WHERE cs.Choregraphie_Id = :id ORDER BY cs.Ordre");
+$reqSon = $pdo->prepare(" SELECT s.SonNote, s.SonVolume FROM choregraphie_sons cs JOIN sons s ON cs.Son_Id = s.Id WHERE cs.Choregraphie_Id = :id ORDER BY cs.Ordre");
 $reqSon->bindParam(':id', $id);
 $reqSon->execute();
 $sons = $reqSon->fetchAll();
@@ -52,9 +52,8 @@ $sons = $reqSon->fetchAll();
 $_SESSION['sons'] = [];
 foreach ($sons as $son) {
     $_SESSION['sons'][] = [
-        'nom' => $son['SonName'],
         'note' => $son['SonNote'],
-        'time' => $son['SonTime']
+        'volume' => $son['SonVolume']
     ];
 }
 

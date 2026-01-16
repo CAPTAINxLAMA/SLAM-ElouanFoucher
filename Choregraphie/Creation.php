@@ -165,18 +165,16 @@ else if ($etape == "2")
     }
     else
     {
-        $names = isset($_POST['SonName']) ? $_POST['SonName'] : [];
         $notes = isset($_POST['SonNote']) ? $_POST['SonNote'] : [];
-        $times = isset($_POST['SonTime']) ? $_POST['SonTime'] : [];
+        $volumes = isset($_POST['SonVolume']) ? $_POST['SonVolume'] : [];
 
         $actionSupprimer = filter_input(INPUT_POST, 'action_supprimer', FILTER_VALIDATE_INT);
         if ($actionSupprimer !== null && $actionSupprimer !== false) {
             $sons = [];
-            foreach ($names as $key => $name) {
+            foreach ($notes as $key => $note) {
                 $sons[] = [
-                        'nom' => $name,
-                        'note' => $notes[$key],
-                        'time' => $times[$key]
+                        'note' => $note,
+                        'volume' => $volumes[$key]
                 ];
             }
 
@@ -194,11 +192,10 @@ else if ($etape == "2")
         if ($action == "ajouter")
         {
             $sons = [];
-            foreach ($names as $key => $name) {
+            foreach ($notes as $key => $note) {
                 $sons[] = [
-                        'nom' => $name,
-                        'note' => $notes[$key],
-                        'time' => $times[$key]
+                        'note' => $note,
+                        'volume' => $volumes[$key]
                 ];
             }
             $_SESSION['sons'] = $sons;
@@ -209,11 +206,10 @@ else if ($etape == "2")
         else if ($action == "Suivant")
         {
             $sons = [];
-            foreach ($names as $key => $name) {
+            foreach ($notes as $key => $note) {
                 $sons[] = [
-                        'nom' => $name,
-                        'note' => $notes[$key],
-                        'time' => $times[$key]
+                        'note' => $note,
+                        'volume' => $volumes[$key]
                 ];
             }
             $_SESSION['sons'] = $sons;
@@ -251,7 +247,7 @@ if ($etape == "3")
             <th>Étape</th>
             <th>Nom</th>
             <th>Contenu</th>
-            <th>Durée (s)</th>
+            <th>Durée (s) / Volume</th>
             <th>Action</th>
         </tr>
         </thead>
@@ -319,9 +315,9 @@ if ($etape == "3")
                 ?>
                 <tr>
                     <td>Son <?php echo ($index + 1); ?></td>
-                    <td><?php echo htmlspecialchars($son['nom']); ?></td>
-                    <td>Note : <?php echo htmlspecialchars($son['note']); ?></td>
-                    <td><?php echo htmlspecialchars($son['time']); ?></td>
+                    <td><?php echo htmlspecialchars(str_replace('.mp3', '', $son['note'])); ?></td>
+                    <td>Fichier : <?php echo htmlspecialchars($son['note']); ?></td>
+                    <td><?php echo htmlspecialchars($son['volume']); ?>%</td>
                     <td>
                         <a href="creer.php?etape=2&modifier=1" class="btn btn-warning btn-sm">Modifier</a>
                     </td>

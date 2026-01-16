@@ -38,7 +38,7 @@ $choree=$choregraphies[0];
     $reqAff->execute();
     $affichages = $reqAff->fetchAll();
 
-    $reqSon = $pdo->prepare("SELECT s.SonName  FROM choregraphie_sons cs JOIN sons s ON cs.Son_Id = s.Id WHERE cs.Choregraphie_Id = :id ORDER BY cs.Ordre");
+    $reqSon = $pdo->prepare("SELECT s.SonNote  FROM choregraphie_sons cs JOIN sons s ON cs.Son_Id = s.Id WHERE cs.Choregraphie_Id = :id ORDER BY cs.Ordre");
     $reqSon->bindParam(':id', $choreId);
     $reqSon->execute();
     $sons = $reqSon->fetchAll();
@@ -80,7 +80,7 @@ $choree=$choregraphies[0];
             <?php
             if (count($sons) > 0) {
                 foreach ($sons as $son) {
-                    echo '<span class="badge bg-success">' . htmlspecialchars($son["SonName"]) . '</span> ';
+                    echo '<span class="badge bg-success">' . htmlspecialchars($son["SonNote"]) . '</span> ';
                 }
             } else {
                 echo '<em>Aucun</em>';
