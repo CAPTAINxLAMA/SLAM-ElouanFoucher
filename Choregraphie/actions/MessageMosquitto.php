@@ -1,8 +1,7 @@
 <?php
 session_start();
 
-$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-
+$id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 
 include_once "../includes/config.php";
 $pdo = new PDO('mysql:host=' . config::HOST . ';dbname=' . config::DBNAME, config::USER, config::PASSWORD);
@@ -44,7 +43,7 @@ $messageJson = json_encode($choreData, JSON_PRETTY_PRINT);
 
 require '../vendor/autoload.php';
 
-use Php\vendor\bluerhinos\phpmqtt\phpMQTT;
+use Bluerhinos\phpMQTT;
 
 $server = '172.16.112.1';
 $port = 1883;
