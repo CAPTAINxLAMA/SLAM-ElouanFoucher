@@ -23,11 +23,17 @@ include "includes/header.php";
 <?php
 $success = filter_input(INPUT_GET, "success", FILTER_VALIDATE_INT);
 $updated = filter_input(INPUT_GET, "updated", FILTER_VALIDATE_INT);
+$tested = filter_input(INPUT_GET, "tested", FILTER_VALIDATE_INT);
+$choreName = filter_input(INPUT_GET, "chore", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
 if ($success == 1) {
     echo '<div class="alert alert-success">Chorégraphie créée avec succès !</div>';
 }
 if ($updated == 1) {
     echo '<div class="alert alert-success">Chorégraphie mise à jour avec succès !</div>';
+}
+if ($tested == 1) {
+    echo '<div class="alert alert-info">Chorégraphie "' . htmlspecialchars($choreName) . '" envoyée à l\'ESP32 via MQTT !</div>';
 }
 ?>
 
