@@ -39,7 +39,7 @@ $choreData = [
 ];
 
 $messageJson = json_encode($choreData, JSON_PRETTY_PRINT);
-
+var_dump($messageJson);
 
 require '../vendor/autoload.php';
 
@@ -52,7 +52,7 @@ $clientId = 'php-sender-' . rand();
 $mqtt = new phpMQTT($server, $port, $clientId);
 
 if ($mqtt->connect()) {
-    $mqtt->publish('Bisik/notification', $messageJson, 0);
+    $mqtt->publish('Bisik', $messageJson, 0);
     $mqtt->close();
     echo "Message envoyé !";
 } else {
@@ -60,4 +60,4 @@ if ($mqtt->connect()) {
 }
 
 header("Location: ../index.php?tested=1&chore=" . urlencode($choree['ChoreName']));
-exit();
+//exit();
