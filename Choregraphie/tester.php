@@ -17,6 +17,10 @@ $id=filter_input(INPUT_GET,"id",FILTER_VALIDATE_INT)
     <input class='btn btn-danger' type='submit' value="Valider">
     <a href="index.php" class="btn btn-primary">Annuler</a>
 </form>
+<br>
+<br>
+WebHook :
+<input type="text" name="webhook" style="width: 550px" value='https://elouan.latetedanslephp.fr/actions/MessageMosquitto.php?id=<?php echo $id ?>' readonly>
 <?php
 include 'includes/footer.php'
 ?>

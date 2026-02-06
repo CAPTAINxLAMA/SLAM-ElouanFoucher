@@ -1,9 +1,9 @@
 <?php
 class config
 {
-    const HOST = "localhost";
-    const USER = "root";
-    const PASSWORD = "";
-    const DBNAME = "bisik";
+    const HOST = "latetedarwelouan.mysql.db";
+    const USER = "latetedarwelouan";
+    const PASSWORD = "ElouanEpsi44";
+    const DBNAME = "latetedarwelouan";
 }
 ?>
