@@ -35,6 +35,8 @@ const int SERVO_PIN = 12;
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+const int SDA = 33;
+const int SCL = 25;
 
 // Audio
 HardwareSerial mp3Serial(2);
@@ -92,7 +94,7 @@ for (JsonObject aff : affichages) {
   display.clearDisplay();
   display.setCursor(0, 0);
   display.setTextWrap(true);
-  display.setTextSize(2);                 // ✅ IMPORTANT
+  display.setTextSize(1);                 // ✅ IMPORTANT
   display.setTextColor(SSD1306_WHITE);
 
   display.println(texte);
@@ -153,7 +155,7 @@ void setup() {
 
 
   // OLED
-  Wire.begin(33, 25);
+  Wire.begin(SDA, SCL);
 
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     Serial.println("❌ Écran OLED non détecté");

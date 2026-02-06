@@ -7,7 +7,7 @@ if ($supprimer !== null && $supprimer !== false && isset($_SESSION['sons'])) {
         unset($_SESSION['sons'][$supprimer]);
         $_SESSION['sons'] = array_values($_SESSION['sons']);
     }
-    header("Location: creer.php?etape=1&modifier=1");
+    header("Location: creer.php?etape=2&modifier=1");
     exit();
 }
 
