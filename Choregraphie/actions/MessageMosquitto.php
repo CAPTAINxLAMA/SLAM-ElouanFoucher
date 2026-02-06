@@ -1,8 +1,6 @@
 <?php
-session_start();
-
-$id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
-
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+var_dump($id );
 include_once "../includes/config.php";
 $pdo = new PDO('mysql:host=' . config::HOST . ';dbname=' . config::DBNAME, config::USER, config::PASSWORD);
 
