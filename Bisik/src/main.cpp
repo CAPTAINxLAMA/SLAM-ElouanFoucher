@@ -17,11 +17,13 @@ int getSoundNumber(const String& name) {
 }
 
 // ================== CONFIG ==================
-const char* ssid = "WIFI_LABO";
-const char* password = "EpsiWis2018!";
+const char* ssid = "twitch.tv/captainxlama";
+const char* password = "GUACAM0LE";
 
-const char* mqtt_server = "172.16.112.1";
+const char* mqtt_server = "mqtt.latetedanslatoile.fr";
 const int mqtt_port = 1883;
+const char* mqtt_user ="Epsi";
+const char* mqtt_pass ="EpsiWis2018!";
 
 // ================== OBJETS ==================
 WiFiClient espClient;
@@ -35,8 +37,8 @@ const int SERVO_PIN = 12;
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
-const int SDA = 33;
-const int SCL = 25;
+const int SDApin = 33;
+const int SCLpin = 25;
 
 // Audio
 HardwareSerial mp3Serial(2);
@@ -134,7 +136,7 @@ for (JsonObject son : sons) {
 void reconnect() {
   while (!client.connected()) {
     Serial.print("Connexion MQTT...");
-    if (client.connect("ESP32-Bisik")) {
+    if (client.connect("ESP32-Bisik", mqtt_user, mqtt_pass)) {
       Serial.println("OK");
       client.subscribe("Bisik");
     } else {
@@ -155,7 +157,7 @@ void setup() {
 
 
   // OLED
-  Wire.begin(SDA, SCL);
+  Wire.begin(SDApin, SCLpin);
 
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     Serial.println("❌ Écran OLED non détecté");

@@ -37,19 +37,20 @@ $choreData = [
 ];
 
 $messageJson = json_encode($choreData, JSON_PRETTY_PRINT);
-var_dump($messageJson);
 
 require '../vendor/autoload.php';
 
 use Bluerhinos\phpMQTT;
 
-$server = '172.16.112.1';
+$server = 'mqtt.latetedanslatoile.fr';
 $port = 1883;
 $clientId = 'php-sender-' . rand();
+$username = 'Epsi';
+$password = 'EpsiWis2018!';
 
 $mqtt = new phpMQTT($server, $port, $clientId);
 
-if ($mqtt->connect()) {
+if ($mqtt->connect(true, null, $username, $password)) {
     $mqtt->publish('Bisik', $messageJson, 0);
     $mqtt->close();
     echo "Message envoyé !";
@@ -58,4 +59,4 @@ if ($mqtt->connect()) {
 }
 
 header("Location: ../index.php?tested=1&chore=" . urlencode($choree['ChoreName']));
-//exit();
+exit();
