@@ -339,9 +339,9 @@ if ($etape == "3")
     </table>
 
     <form action="<?php echo $actionUrl; ?>" method="post">
-        <input type="hidden" name="mouvements" value='<?php echo isset($_SESSION['mouvements']) ? json_encode($_SESSION['mouvements']) : '[]'; ?>'>
-        <input type="hidden" name="affichages" value='<?php echo isset($_SESSION['affichages']) ? json_encode($_SESSION['affichages']) : '[]'; ?>'>
-        <input type="hidden" name="sons" value='<?php echo isset($_SESSION['sons']) ? json_encode($_SESSION['sons']) : '[]'; ?>'>
+        <input type="hidden" name="mouvements" value="<?php echo htmlspecialchars(json_encode($_SESSION['mouvements'] ?? []), ENT_QUOTES, 'UTF-8'); ?>">
+        <input type="hidden" name="affichages" value="<?php echo htmlspecialchars(json_encode($_SESSION['affichages'] ?? []), ENT_QUOTES, 'UTF-8'); ?>">
+        <input type="hidden" name="sons" value="<?php echo htmlspecialchars(json_encode($_SESSION['sons'] ?? []), ENT_QUOTES, 'UTF-8'); ?>">
         <input type="hidden" name="token" value="<?php echo $token; ?>">
         <?php if ($modeModification): ?>
             <input type="hidden" name="modify_id" value="<?php echo $_SESSION['modify_id']; ?>">
