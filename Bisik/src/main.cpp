@@ -126,7 +126,7 @@ for (JsonObject son : sons) {
   player.volume(volume);
   player.play(track);
 
-  delay(1000); // durée du son (simple pour test)
+  delay(3000); // durée du son (simple pour test)
 }
 
   Serial.println("=========================");
