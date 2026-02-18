@@ -4,6 +4,25 @@ var_dump($id );
 include_once "../includes/config.php";
 $pdo = new PDO('mysql:host=' . config::HOST . ';dbname=' . config::DBNAME, config::USER, config::PASSWORD);
 
+
+$heureActuelle = date('H:i:s');
+$jourSemaine = date('N');
+
+$typeJour = ($jourSemaine >= 6) ? 'weekend' : 'semaine';
+
+$reqReglage = $pdo->prepare("SELECT * FROM reglages_horaires WHERE Type = :type");
+$reqReglage->bindParam(':type', $typeJour);
+$reqReglage->execute();
+$reglage = $reqReglage->fetch();
+
+$heureDebut = $reglage['HeureDebut'];
+$heureFin = $reglage['HeureFin'];
+
+if ($heureActuelle < $heureDebut || $heureActuelle > $heureFin) {
+    header("Location: ../index.php?blocked=1");
+    exit();
+}
+
 $reqChore = $pdo->prepare("SELECT * FROM choregraphies WHERE Id = :id");
 $reqChore->bindParam(':id', $id);
 $reqChore->execute();
