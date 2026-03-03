@@ -46,7 +46,7 @@ elseif ($error == 'semaine') {
     <form action="actions/update_reglages.php" method="post">
         <table class="table table-bordered">
             <tr>
-                <th colspan="2">Samedi / Dimanche</th>
+                <th>Samedi / Dimanche</th>
             </tr>
             <tbody>
             <tr>
@@ -61,7 +61,7 @@ elseif ($error == 'semaine') {
             </tbody>
 
             <tr>
-                <th colspan="2">Lundi - Vendredi</th>
+                <th>Lundi - Vendredi</th>
             </tr>
             <tbody>
             <tr>
